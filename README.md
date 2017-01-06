@@ -71,7 +71,7 @@ office.cart << Label.new(sender, receiver, product_id: 21, price: 145)
 # all available page formats can be received with
 # puts office.page_formats
 labels = office.checkout!(page_format: 25)
-IO.write('labels_as_pds_file.pdf', labels)
+IO.write('labels_as_pdf_file.pdf', labels)
 ```
 
 The output will be a ready to use shipping label as shown below.
