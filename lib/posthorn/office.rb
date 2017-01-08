@@ -5,8 +5,13 @@ module Posthorn
 
     def initialize
       @client = SoapClient.new
-      @user = @client.authenticate
       @cart = []
+    end
+
+    def user
+      @user ||= begin
+        @client.authenticate
+      end
     end
 
     def page_formats
@@ -26,7 +31,7 @@ module Posthorn
       page = 0
 
       message = {
-        userToken: @user.user_token,
+        userToken: user.user_token,
         pageFormatId: args[:page_format] || 25, # Brother 62mm
         positions: @cart.map.with_index { |label, ix| label.to_h(page: ix) },
         total: balance
@@ -34,7 +39,7 @@ module Posthorn
 
       response = @client.call(:checkout_shopping_cart_pdf, message)
       data = response.body[:checkout_shopping_cart_pdf_response]
-      @user.wallet_balance = data[:wallet_ballance]
+      user.wallet_balance = data[:wallet_ballance]
 
       @cart.clear
 
@@ -44,5 +49,6 @@ module Posthorn
       request.read_timeout = 240
       HTTPI.get(request).body
     end
+
   end
 end
