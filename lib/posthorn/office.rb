@@ -16,16 +16,20 @@ module Posthorn
       end
     end
 
+    def balance
+      cents = 0
+      @cart.each { |label| cents += label.price }
+      cents
+    end
+
     def checkout!(args = {})
       page = 0
-      price = 0
-      @cart.each { |label| price += label.price }
 
       message = {
         userToken: @user.user_token,
         pageFormatId: args[:page_format] || 25, # Brother 62mm
         positions: @cart.map.with_index { |label, ix| label.to_h(page: ix) },
-        total: price
+        total: balance
       }
 
       response = @client.call(:checkout_shopping_cart_pdf, message)

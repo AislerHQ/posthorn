@@ -45,4 +45,32 @@ describe Office do
     expect(labels.length).to be >= 100
   end
 
+  it 'should return cart\' balance' do
+    office = Office.new
+
+    receiver = Address.new(
+      company: 'Hans Peter Wurst Inc.',
+      firstname: 'Hans Peter',
+      lastname: 'Wurst',
+      street: 'Schoolstraat',
+      no: '2',
+      city: 'Lemiers',
+      zip: '6295',
+      country: 'de')
+
+    sender = Address.new(
+      company: 'AISLER B.V.',
+      street: 'Schoolstraat',
+      no: '2',
+      city: 'Lemiers',
+      zip: '6295AV',
+      country: 'nl')
+
+    office.cart << Label.new(sender, receiver, product_id: 21, price: 145)
+    office.cart << Label.new(sender, receiver, product_id: 21, price: 145)
+    office.cart << Label.new(sender, receiver, product_id: 21, price: 145)
+
+    expect(office.balance).to eq(3 * 145)
+  end
+
 end
