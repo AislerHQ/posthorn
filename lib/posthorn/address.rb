@@ -7,14 +7,9 @@ module Posthorn
       @lastname = data[:lastname]
       @firstname = data[:firstname]
 
-      if data[:no]
-        @no = data[:no]
-        @street = data[:street]
-      else
-        chunks = data[:street].split(' ')
-        @no = chunks[-1]
-        @street = chunks[0..-2].join(' ')
-      end
+
+      @no = data[:no] || ''
+      @street = data[:street]
       @city = data[:city]
       @zip = data[:zip]
       @country = data[:country].is_a?(String) ? ISO3166::Country.new(data[:country]) : data[:country]

@@ -55,8 +55,7 @@ describe Address do
       country: 'nl'
       )
 
-      expect(address.street).to eq('Schoolstraat')
-      expect(address.no).to eq('2')
+      expect(address.street).to eq('Schoolstraat 2')
   end
 
 end
