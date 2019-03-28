@@ -3,6 +3,8 @@ module Posthorn
     attr_reader :user
     attr_accessor :cart
 
+    DEFAULT_PAGE_FORMAT = 25 # Brother 62mm
+
     def initialize
       @client = SoapClient.new
       @cart = []
@@ -27,12 +29,10 @@ module Posthorn
       cents
     end
 
-    def checkout!(args = {})
-      page = 0
-
+    def checkout!(page_format: DEFAULT_PAGE_FORMAT, download_labels: true)
       message = {
         userToken: user.user_token,
-        pageFormatId: args[:page_format] || 25, # Brother 62mm
+        pageFormatId: page_format,
         positions: @cart.map.with_index { |label, ix| label.to_h(page: ix) },
         total: balance
       }
@@ -43,12 +43,16 @@ module Posthorn
 
       @cart.clear
 
+      return data unless download_labels
 
+      download_labels(data)
+    end
+
+    def download_labels(data)
       request = HTTPI::Request.new
       request.url = data[:link]
       request.read_timeout = 240
       HTTPI.get(request).body
     end
-
   end
 end
