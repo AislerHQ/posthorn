@@ -17,7 +17,7 @@ describe Office do
     expect(office.user.wallet_balance).to be > 0
   end
 
-  describe "checkout!" do
+  describe 'checkout!' do
     let(:office) { Office.new }
     let(:receiver) do
       Address.new(
@@ -46,23 +46,23 @@ describe Office do
       office.cart << Label.new(sender, receiver, product_id: 21, price: 145)
     end
 
-    context "when downloading labels" do
-      let(:labels) { office.checkout!(page_format: 25) }
+    context 'when downloading labels' do
+      let(:response) { office.checkout!(page_format: 25) }
 
-      it "has one item in the cart" do
+      it 'has one item in the cart' do
         expect(office.cart.length).to eq(1)
       end
 
       it 'should order national post stamps' do
-        expect(labels.length).to be >= 100
+        expect(response.length).to be >= 100
       end
     end
 
-    context "when not downloading labels" do
-      let(:labels) { office.checkout!(page_format: 25, download_labels: false) }
+    context 'when not downloading labels' do
+      let(:response) { office.checkout!(page_format: 25, download_labels: false) }
 
       it 'returns the response of the API' do
-        expect(labels[:link]).to be_a(String)
+        expect(response[:link]).to be_a(String)
       end
     end
   end
