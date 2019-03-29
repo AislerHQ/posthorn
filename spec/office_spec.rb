@@ -17,32 +17,54 @@ describe Office do
     expect(office.user.wallet_balance).to be > 0
   end
 
-  it 'should order national post stamps' do
-    office = Office.new
+  describe 'checkout!' do
+    let(:office) { Office.new }
+    let(:receiver) do
+      Address.new(
+        company: 'Hans Peter Wurst Inc.',
+        firstname: 'Hans Peter',
+        lastname: 'Wurst',
+        street: 'Schoolstraat',
+        no: '2',
+        city: 'Lemiers',
+        zip: '6295',
+        country: 'de'
+      )
+    end
+    let(:sender) do
+      Address.new(
+        company: 'AISLER B.V.',
+        street: 'Schoolstraat',
+        no: '2',
+        city: 'Lemiers',
+        zip: '6295AV',
+        country: 'nl'
+      )
+    end
 
-    receiver = Address.new(
-      company: 'Hans Peter Wurst Inc.',
-      firstname: 'Hans Peter',
-      lastname: 'Wurst',
-      street: 'Schoolstraat',
-      no: '2',
-      city: 'Lemiers',
-      zip: '6295',
-      country: 'de')
+    before do
+      office.cart << Label.new(sender, receiver, product_id: 21, price: 145)
+    end
 
-    sender = Address.new(
-      company: 'AISLER B.V.',
-      street: 'Schoolstraat',
-      no: '2',
-      city: 'Lemiers',
-      zip: '6295AV',
-      country: 'nl')
+    context 'when downloading labels' do
+      let(:response) { office.checkout!(page_format: 25) }
 
-    office.cart << Label.new(sender, receiver, product_id: 21, price: 145)
-    expect(office.cart.length).to eq(1)
+      it 'has one item in the cart' do
+        expect(office.cart.length).to eq(1)
+      end
 
-    labels = office.checkout!(page_format: 25)
-    expect(labels.length).to be >= 100
+      it 'should order national post stamps' do
+        expect(response.length).to be >= 100
+      end
+    end
+
+    context 'when not downloading labels' do
+      let(:response) { office.checkout!(page_format: 25, download_labels: false) }
+
+      it 'returns the response of the API' do
+        expect(response[:link]).to be_a(String)
+      end
+    end
   end
 
   it 'should return cart\' balance' do
@@ -72,5 +94,4 @@ describe Office do
 
     expect(office.balance).to eq(3 * 145)
   end
-
 end
