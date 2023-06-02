@@ -6,7 +6,7 @@ With this Gem it is possible to order pre-paid shipping stickers from the Deutsc
 
 https://portokasse.deutschepost.de/portokasse/#/
 
-https://www.deutschepost.de/de/i/internetmarke-porto-drucken/partner-werden.html
+https://www.deutschepost.de/formular-ima
 
 
 ## Installation
